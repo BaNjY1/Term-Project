@@ -1,0 +1,47 @@
+<!-- login.html -->
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>تسجيل الدخول</title>
+  <style>
+    body { font-family: sans-serif; max-width: 400px; margin: auto; padding: 30px; }
+    input, button { display: block; width: 100%; margin-bottom: 15px; padding: 10px; }
+    #msg { color: red; }
+  </style>
+</head>
+<body>
+  <h2>تسجيل الدخول</h2>
+  <form id="loginForm">
+    <input type="email" name="email" placeholder="البريد الإلكتروني" required />
+    <input type="password" name="password" placeholder="كلمة المرور" required />
+    <button type="submit">دخول</button>
+  </form>
+  <p id="msg"></p>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const data = {
+        email: form.email.value,
+        password: form.password.value
+      };
+
+      const res = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      const result = await res.json();
+      document.getElementById('msg').textContent = result.message;
+
+      if (res.ok) {
+        localStorage.setItem('loggedIn', 'true'); // علامة الدخول
+        setTimeout(() => window.location.href = '/cheat.html', 1500);
+      }
+    });
+  </script>
+</body>
+</html>

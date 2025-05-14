@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Radar Chart Character Stats</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background: #f0f0f0;
+    }
+    canvas {
+      max-width: 600px;
+      margin: 20px auto;
+    }
+    form {
+      margin: 20px;
+    }
+    input {
+      margin: 5px;
+      width: 60px;
+    }
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Character Stats</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+ 
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <h2>The Great Warriors</h2>
+  <canvas id="myRadarChart"></canvas>
+
+  <form id="statForm">
+    <label>Speed: <input type="number" id="speed" min="0" max="100" value="20" /></label>
+    <label>Stamina: <input type="number" id="stamina" min="0" max="100" value="30" /></label>
+    <label>Strength: <input type="number" id="strength" min="0" max="100" value="80" /></label>
+    <label>Intelligence: <input type="number" id="intelligence" min="0" max="100" value="90" /></label>
+    <label>Luck: <input type="number" id="luck" min="0" max="100" value="70" /></label>
+    <label>Charisma: <input type="number" id="charisma" min="0" max="100" value="30" /></label>
+    <br />
+    <button type="button" onclick="updateChart()">Update Chart</button>
+    <button type="button" onclick="saveCharacter()">Save Character</button>
+    <button type="button" onclick="loadCharacters()">Load Saved Characters</button>
+  </form>
+
+  <select id="characterList" onchange="loadSelectedCharacter()">
+    <option disabled selected>-- Select Saved Character --</option>
+  </select>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const statLabels = ['speed', 'stamina', 'strength', 'intelligence', 'luck', 'charisma'];
+    
+    const chartData = {
+      labels: statLabels,
+      datasets: [{
+        label: '',
+        data: [20, 30, 80, 90, 70, 30],
+        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+        borderColor: '#000',
+        borderWidth: 1
+      }]
+    };
+
+    const radarChart = new Chart(document.getElementById('myRadarChart').getContext('2d'), {
+      type: 'radar',
+      data: chartData,
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        scales: {
+          r: {
+            angleLines: { display: true },
+            suggestedMin: 0,
+            suggestedMax: 100
+          }
+        }
+      }
+    });
+
+    function updateChart() {
+      const newData = statLabels.map(label => Number(document.getElementById(label).value));
+      radarChart.data.datasets[0].data = newData;
+      radarChart.update();
+    }
+
+    function saveCharacter() {
+      const character = {};
+      statLabels.forEach(label => {
+        character[label] = Number(document.getElementById(label).value);
+      });
+
+      fetch('/characters', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(character)
+      })
+      .then(res => res.json())
+      .then(data => alert("Character saved!"))
+      .catch(err => alert("Error saving character"));
+    }
+
+    function loadCharacters() {
+      fetch('/characters')
+        .then(res => res.json())
+        .then(data => {
+          const select = document.getElementById('characterList');
+          select.innerHTML = '<option disabled selected>-- Select Saved Character --</option>';
+          data.forEach((character, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.textContent = `Character #${index + 1}`;
+            select.appendChild(option);
+          });
+          window.savedCharacters = data;
+        });
+    }
+
+    function loadSelectedCharacter() {
+      const index = document.getElementById('characterList').value;
+      const character = window.savedCharacters[index];
+      statLabels.forEach(label => {
+        document.getElementById(label).value = character[label];
+      });
+      updateChart();
+    }
+  </script>
+</body>
+</html>

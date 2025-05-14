@@ -1,0 +1,47 @@
+<!-- register.html -->
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>التسجيل</title>
+  <style>
+    body { font-family: sans-serif; max-width: 400px; margin: auto; padding: 30px; }
+    input, button { display: block; width: 100%; margin-bottom: 15px; padding: 10px; }
+    #msg { color: red; }
+  </style>
+</head>
+<body>
+  <h2>إنشاء حساب</h2>
+  <form id="registerForm">
+    <input type="text" name="name" placeholder="الاسم" required />
+    <input type="email" name="email" placeholder="البريد الإلكتروني" required />
+    <input type="password" name="password" placeholder="كلمة المرور" required />
+    <button type="submit">تسجيل</button>
+  </form>
+  <p id="msg"></p>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const data = {
+        name: form.name.value,
+        email: form.email.value,
+        password: form.password.value,
+      };
+
+      const res = await fetch('/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+      document.getElementById('msg').textContent = result.message;
+      if (result.message.includes('تم التسجيل')) {
+        setTimeout(() => window.location.href = 'login.html', 1500);
+      }
+    });
+  </script>
+</body>
+</html>
