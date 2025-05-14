@@ -39,11 +39,10 @@
 
       const result = await res.json();
       document.getElementById('msg').textContent = result.message;
-      if (result.message.includes('Done!!')) {
+      if (result.message === 'Done!!') {
         setTimeout(() => window.location.href = 'login.html', 1500);
       }
     });
   </script>
 </body>
-
 </html>

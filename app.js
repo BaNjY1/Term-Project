@@ -30,7 +30,7 @@ app.post('/register', (req, res) => {
         return res.status(500).json({ message: 'Something went wrong' });
       }
 
-      res.json({ message: 'Correct!! you can now' });
+      res.json({ message: 'Done!!' });
     });
   });
 });
@@ -47,7 +47,7 @@ app.post('/login', (req, res) => {
     const user = users.find(u => u.email === email && u.password === password);
 
     if (user) {
-      res.json({ message: `Hello ${user.name}! Succeful!!` });
+      res.json({ message: `Hello ${user.name}!!` });
     } else {
       res.status(401).json({ message: 'e-mail or the password is incorrect' });
     }
@@ -78,5 +78,5 @@ app.post('/characters', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`✅ Server is working: http://localhost:${PORT}`);
+  console.log(` Server is working: http://localhost:${PORT}`);
 });
