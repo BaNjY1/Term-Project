@@ -1,22 +1,23 @@
-<!-- register.html -->
 <!DOCTYPE html>
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>التسجيل</title>
+  <title>Sign Up</title>
+  
   <style>
     body { font-family: sans-serif; max-width: 400px; margin: auto; padding: 30px; }
     input, button { display: block; width: 100%; margin-bottom: 15px; padding: 10px; }
     #msg { color: red; }
   </style>
+
 </head>
 <body>
-  <h2>إنشاء حساب</h2>
+  <h2>Create an account</h2>
   <form id="registerForm">
-    <input type="text" name="name" placeholder="الاسم" required />
-    <input type="email" name="email" placeholder="البريد الإلكتروني" required />
-    <input type="password" name="password" placeholder="كلمة المرور" required />
-    <button type="submit">تسجيل</button>
+    <input type="text" name="name" placeholder="Name" required />
+    <input type="email" name="email" placeholder="e-mail" required />
+    <input type="password" name="password" placeholder="Password" required />
+    <button type="submit">Sign UP</button>
   </form>
   <p id="msg"></p>
 
@@ -38,10 +39,11 @@
 
       const result = await res.json();
       document.getElementById('msg').textContent = result.message;
-      if (result.message.includes('تم التسجيل')) {
+      if (result.message.includes('Done!!')) {
         setTimeout(() => window.location.href = 'login.html', 1500);
       }
     });
   </script>
 </body>
+
 </html>

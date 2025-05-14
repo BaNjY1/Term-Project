@@ -7,11 +7,10 @@ const PORT = 3000;
 const usersPath = path.join(__dirname, 'users.json');
 const charactersPath = path.join(__dirname, 'characters.json');
 
-// إعدادات Express
+// إعدادات 
 app.use(express.static('public'));
 app.use(express.json());
 
-// -------------------- تسجيل مستخدم جديد --------------------
 app.post('/register', (req, res) => {
   const { name, email, password } = req.body;
 
@@ -21,42 +20,40 @@ app.post('/register', (req, res) => {
 
     const exists = users.find(u => u.email === email);
     if (exists) {
-      return res.status(400).json({ message: 'البريد الإلكتروني مستخدم بالفعل' });
+      return res.status(400).json({ message: 'e-mail already in use' });
     }
 
     users.push({ name, email, password });
 
     fs.writeFile(usersPath, JSON.stringify(users, null, 2), (err) => {
       if (err) {
-        return res.status(500).json({ message: 'حدث خطأ أثناء الحفظ' });
+        return res.status(500).json({ message: 'Something went wrong' });
       }
 
-      res.json({ message: 'تم التسجيل بنجاح! يمكنك الآن تسجيل الدخول.' });
+      res.json({ message: 'Correct!! you can now' });
     });
   });
 });
 
-// -------------------- تسجيل الدخول --------------------
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
 
   fs.readFile(usersPath, 'utf-8', (err, data) => {
     if (err || !data) {
-      return res.status(500).json({ message: 'خطأ في قراءة البيانات' });
+      return res.status(500).json({ message: 'Error' });
     }
 
     const users = JSON.parse(data);
     const user = users.find(u => u.email === email && u.password === password);
 
     if (user) {
-      res.json({ message: `مرحبًا ${user.name}! تم تسجيل الدخول بنجاح.` });
+      res.json({ message: `Hello ${user.name}! Succeful!!` });
     } else {
-      res.status(401).json({ message: 'البريد أو كلمة المرور غير صحيحة' });
+      res.status(401).json({ message: 'e-mail or the password is incorrect' });
     }
   });
 });
 
-// -------------------- الحصول على الشخصيات --------------------
 app.get('/characters', (req, res) => {
   fs.readFile(charactersPath, 'utf-8', (err, data) => {
     if (err) return res.status(500).send('Error reading file');
@@ -64,7 +61,6 @@ app.get('/characters', (req, res) => {
   });
 });
 
-// -------------------- إضافة شخصية جديدة --------------------
 app.post('/characters', (req, res) => {
   const newCharacter = req.body;
 
@@ -81,7 +77,6 @@ app.post('/characters', (req, res) => {
   });
 });
 
-// -------------------- تشغيل السيرفر --------------------
 app.listen(PORT, () => {
-  console.log(`✅ السيرفر يعمل على: http://localhost:${PORT}`);
+  console.log(`✅ Server is working: http://localhost:${PORT}`);
 });
