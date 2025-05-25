@@ -6,7 +6,7 @@ const PORT = 3000;
 
 const usersPath = path.join(__dirname, 'users.json');
 const charactersPath = path.join(__dirname, 'characters.json');
-
+ 
 // إعدادات 
 app.use(express.static('public'));
 app.use(express.json());
